@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyright (C) 2020 Marius Rieder <marius.rieder@durchmesser.ch> - License: GNU General Public License v2
+
+# <<<veeam_o365jobs:sep(9) >>>
+# 01234567-89ab-cdef-0123-456789abcdef  cmk.onmicrosoft.com Outlook Online  Success 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818 191 142
+
+
+factory_settings['veeam_o563jobs_default_levels'] = {
+    'states': {
+        'Success': 0,
+        'Warning': 1,
+        'Stopped': 1,
+        'Failed':  2,
+    }
+}
+
+
+def inventory_veeam_o365jobs(info):
+    for line in info:
+        yield line[1], {'jobId': line[0]}
+
+
+def check_veeam_o365jobs(item, params, info):
+    for line in info:
+        if line[0] != params['jobId']:
+            continue
+
+        job_org, job_name, job_state, \
+            job_creation_time, job_end_time, \
+            job_objects, job_transferred = line[1:7]
+
+        if job_state in ['Running']:
+            yield 0, 'Running since %s (current state is: %s)' % (job_creation_time, job_state)
+            return
+
+        state = params.get('state').get(job_state, 3)
+        yield state, "Status: %s" % job_state
+
+        yield check_levels(saveint(job_objects),
+                           'items',
+                           None,
+                           infoname='Transferred Items')
+        yield check_levels(savefloat(job_transferred),
+                           'transferred',
+                           None,
+                           human_readable_func=get_filesize_human_readable,
+                           infoname='Transferred Data')
+        yield check_levels(savefloat(data[1]),
+                           'duration',
+                           params.get('duration', None),
+                           human_readable_func=get_age_human_readable,
+                           infoname='Backup duration')
+
+check_info['veeam_o365jobs'] = {
+    'inventory_function': inventory_veeam_o365jobs,
+    'check_function': check_veeam_o365jobs,
+    'service_description': 'VEEAM O365 Job %s',
+    'has_perfdata': True,
+    'group': 'veeam_o365jobs',
+    'default_levels_variable': 'veeam_o365jobs_default_levels',
+}

@@ -1,0 +1,19 @@
+{
+    'author': u'Marius Rieder <marius.rieder@durchmesser.ch>',
+    'description': u'Agent Plugin and Checks for Veeam for Office 365',
+    'download_url': 'https://github.com/jiuka/checkmk_veeam_o365/releases',
+    'files': {
+        'agents': [],
+        'checkman': [],
+        'checks': ['veeam_o365jobs', 'veeam_o365licenses'],
+        'doc': [],
+        'inventory': [],
+        'notifications': [],
+        'pnp-templates': [],
+        'web': [ ]},
+    'name': 'veeam_o365',
+    'title': u'Veeam for Office 365 Checks',
+    'version': '0.1',
+    'version.min_required': '1.6.0',
+    'version.packaged': '1.6.0p11'
+}
