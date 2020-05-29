@@ -18,7 +18,7 @@ factory_settings['veeam_o563jobs_default_levels'] = {
 
 def inventory_veeam_o365jobs(info):
     for line in info:
-        yield line[1], {'jobId': line[0]}
+        yield line[2], {'jobId': line[0]}
 
 
 def check_veeam_o365jobs(item, params, info):
@@ -27,8 +27,8 @@ def check_veeam_o365jobs(item, params, info):
             continue
 
         job_org, job_name, job_state, \
-            job_creation_time, job_end_time, \
-            job_objects, job_transferred = line[1:7]
+            job_creation_time, job_end_time, job_duration, \
+            job_objects, job_transferred = line[1:9]
 
         if job_state in ['Running']:
             yield 0, 'Running since %s (current state is: %s)' % (job_creation_time, job_state)
@@ -46,7 +46,7 @@ def check_veeam_o365jobs(item, params, info):
                            None,
                            human_readable_func=get_filesize_human_readable,
                            infoname='Transferred Data')
-        yield check_levels(savefloat(data[1]),
+        yield check_levels(savefloat(job_duration),
                            'duration',
                            params.get('duration', None),
                            human_readable_func=get_age_human_readable,
