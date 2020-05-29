@@ -6,7 +6,7 @@
 # 01234567-89ab-cdef-0123-456789abcdef  cmk.onmicrosoft.com Outlook Online  Success 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818 191 142
 
 
-factory_settings['veeam_o563jobs_default_levels'] = {
+factory_settings['veeam_o365jobs_default_levels'] = {
     'states': {
         'Success': 0,
         'Warning': 1,
@@ -34,7 +34,7 @@ def check_veeam_o365jobs(item, params, info):
             yield 0, 'Running since %s (current state is: %s)' % (job_creation_time, job_state)
             return
 
-        state = params.get('state').get(job_state, 3)
+        state = params.get('states').get(job_state, 3)
         yield state, "Status: %s" % job_state
 
         yield check_levels(saveint(job_objects),
