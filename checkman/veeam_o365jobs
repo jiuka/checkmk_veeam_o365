@@ -1,0 +1,17 @@
+title: Check Veeam for Office 365 Jobs
+agents: windows
+catalog: os/misc
+distribution:
+author: Marius Rieder <marius.rieder@durchmesser.ch>
+license: GPL
+description:
+ This check monitors the status of a Veeam for Office 365 job
+
+ The check can be configured via the corresponding WATO rules
+ {Veeam for Office 365 Job Discovery} and {Veeam for Office 365 Job Levels}
+
+item:
+ The job name, may prepended with the organisation
+
+inventory:
+ One check per job is discoverd.

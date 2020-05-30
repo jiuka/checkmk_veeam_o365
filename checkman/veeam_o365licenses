@@ -1,0 +1,17 @@
+title: Check Veeam for Office 365 Licenses
+agents: windows
+catalog: os/misc
+distribution:
+author: Marius Rieder <marius.rieder@durchmesser.ch>
+license: GPL
+description:
+ This check monitors the status of a Veeam for Office 365 licenses
+
+ The check can be configured via the corresponding WATO rules
+ {Veeam for Office 365 licenses}
+
+item:
+ The license number
+
+inventory:
+ One check per license is discoverd.
