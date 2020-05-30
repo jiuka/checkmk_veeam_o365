@@ -14,14 +14,22 @@ def check_veeam_o365licenses(item, params, info):
         yield 3, 'License not found.'
         return
 
-    license_state, license_date, license_used, license_total = info[item]
+    license_state, license_date, license_validity, license_used, license_total = info[item]
 
     if license_state == 'Valid':
         yield 0, 'License is vaild till %s' % license_date
     else:
         yield 2, 'License is %s' % license_state
 
-    yield license_check_levels(saveint(license_total), saveint(license_used), params)
+
+    yield check_levels(savefloat(license_validity),
+                       None,
+                       (None, None) + params.get('validity', None),
+                       human_readable_func=get_age_human_readable,
+                       infoname='Period of validity')
+
+    yield license_check_levels(saveint(license_total), saveint(license_used),
+                               params.get('licenses', False))
 
 check_info['veeam_o365licenses'] = {
     'inventory_function': inventory_veeam_o365licenses,

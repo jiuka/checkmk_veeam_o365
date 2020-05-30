@@ -10,7 +10,10 @@
         'inventory': [],
         'notifications': [],
         'pnp-templates': [],
-        'web': [ ]},
+        'web': [
+            'plugins/wato/check_parameters_veeam_o365licenses.py',
+            'plugins/wato/check_parameters_veeam_o365jobs.py',
+        ]},
     'name': 'veeam_o365',
     'title': u'Veeam for Office 365 Checks',
     'version': '0.1',

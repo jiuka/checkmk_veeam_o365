@@ -14,11 +14,20 @@ factory_settings['veeam_o365jobs_default_levels'] = {
         'Failed':  2,
     }
 }
+inventory_veeam_o365jobs_rules = []
 
 
 def inventory_veeam_o365jobs(info):
+    settings = host_extra_conf_merged(host_name(), inventory_veeam_o365jobs_rules)
+    appearance = settings.get('item_appearance', 'name')
+
     for line in info:
-        yield line[2], {'jobId': line[0]}
+        name = line[2]
+        if appearance == 'short':
+            name = "%s %s" % (line[1].replace('.onmicrosoft.com', ''), line[2])
+        elif appearance == 'full':
+            name = "%s %s" % (line[1], line[2])
+        yield name, {'jobId': line[0]}
 
 
 def check_veeam_o365jobs(item, params, info):
