@@ -13,6 +13,7 @@
         'web': [
             'plugins/metrics/veeam_o365jobs.py',
             'plugins/metrics/veeam_o365licenses.py',
+            'plugins/wato/agent_bakery_veeam_o365.py',
             'plugins/wato/check_parameters_veeam_o365licenses.py',
             'plugins/wato/check_parameters_veeam_o365jobs.py',
         ]},
