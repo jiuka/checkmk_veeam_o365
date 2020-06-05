@@ -4,3 +4,8 @@
 
 This Plugin and check can monitor the Veeam for Office 365 jobs and licenses.
 
+## Screenshots
+### Services
+![Services](examples/veeam_o365_services.png)
+### Metrics
+![Metrics](examples/veeam_o365_metrics.png)
