@@ -19,6 +19,7 @@
 
 # <<<veeam_o365jobs:sep(9) >>>
 # 01234567-89ab-cdef-0123-456789abcdef  cmk.onmicrosoft.com Outlook Online  Success 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818 191 142
+# 12345678-9abc-def0-1234-56789abcdef0  cmk.onmicrosoft.com Outlook Online2  Failed 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818
 
 factory_settings['veeam_o365jobs_default_levels'] = {
     'states': {
@@ -50,8 +51,10 @@ def check_veeam_o365jobs(item, params, info):
             continue
 
         job_org, job_name, job_state, \
-            job_creation_time, job_end_time, job_duration, \
-            job_objects, job_transferred = line[1:9]
+            job_creation_time, job_end_time, job_duration = line[1:7]
+        job_objects = job_transferred = 0
+        if len(line) >= 9:
+            job_objects, job_transferred = line[7:9]
 
         if job_state in ['Running']:
             yield 0, 'Running since %s (current state is: %s)' % (job_creation_time, job_state)
