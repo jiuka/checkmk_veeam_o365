@@ -23,16 +23,16 @@
 
 def inventory_veeam_o365licenses(info):
     for index, line in enumerate(info):
-        yield index, {}
+        yield str(index), {}
 
 
 def check_veeam_o365licenses(item, params, info):
-    if item > len(info):
+    if int(item) > len(info):
         yield 3, 'License not found.'
         return
 
     license_state, license_date, license_validity, \
-        license_used, license_total = info[item]
+        license_used, license_total = info[int(item)]
 
     if license_state == 'Valid':
         yield 0, 'License is vaild till %s' % license_date
