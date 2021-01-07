@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+from cmk.base.check_legacy_includes.license import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
 # <<<veeam_o365licenses:sep(9) >>>
 # Valid	28.06.2020 02:00:00	2592000	42	50000
@@ -55,6 +56,5 @@ check_info['veeam_o365licenses'] = {
     'check_function': check_veeam_o365licenses,
     'service_description': 'VEEAM O365 License %s',
     'has_perfdata': True,
-    'group': 'veeam_o365licenses',
-    'includes': ['license.include']
+    'group': 'veeam_o365licenses'
 }

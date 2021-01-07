@@ -27,8 +27,8 @@ from cmk.gui.plugins.wato import (
 )
 
 try:
-    from cmk.gui.cee.plugins.wato.agent_bakery import (
-        RulespecGroupMonitoringAgentsWindowsAgent
+    from cmk.gui.cee.plugins.wato.agent_bakery.rulespecs.utils import (
+        RulespecGroupMonitoringAgentsAgentPlugins
     )
 except Exception:
     RulespecGroupMonitoringAgentsWindowsAgent = None
@@ -45,11 +45,10 @@ def _valuespec_agent_config_veeam_o365():
         ],
     )
 
-
 if RulespecGroupMonitoringAgentsWindowsAgent is not None:
     rulespec_registry.register(
         HostRulespec(
-            group=RulespecGroupMonitoringAgentsWindowsAgent,
+            group=RulespecGroupMonitoringAgentsAgentPlugins,
             name='agent_config:veeam_o365',
             valuespec=_valuespec_agent_config_veeam_o365,
         ))

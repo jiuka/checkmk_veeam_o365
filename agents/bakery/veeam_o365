@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 #
 # Copyright (C) 2020  Marius Rieder <marius.rieder@durchmesser.ch>
@@ -16,14 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+from pathlib import Path
+from typing import Any
 
+from cmk.base.cee.plugins.bakery.bakery_api.v0 import FileGenerator, OS, Plugin, register
 
-def bake_veeam_o365(opsys, conf, conf_dir, plugins_dir):
-    shutil.copy2(cmk.utils.paths.local_agents_dir + "/windows/plugins/veeam_o365_status.ps1",
-                 plugins_dir + "/veeam_o365_status.ps1")
+def get_veeam_o365_files(conf: Any) -> FileGenerator:
+    yield Plugin(base_os=OS.WINDOWS, source=Path("veeam_o365_status.ps1"))
 
-
-bakery_info['veeam_o365'] = {
-    'bake_function': bake_veeam_o365,
-    'os': ['windows'],
-}
+register.bakery_plugin(
+    name="veeam_o365",
+    files_function=get_veeam_o365_files,
+)
