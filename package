@@ -3,12 +3,13 @@
     'description': u'Agent Plugin and Checks for Veeam for Office 365',
     'download_url': 'https://github.com/jiuka/checkmk_veeam_o365/releases',
     'files': {
+        'agent_based': ['veeam_o365jobs.py', 'veeam_o365licenses.py'],
         'agents': [
             'bakery/veeam_o365',
             'windows/plugins/veeam_o365_status.ps1',
         ],
         'checkman': ['veeam_o365jobs', 'veeam_o365licenses'],
-        'checks': ['veeam_o365jobs', 'veeam_o365licenses'],
+        'checks': [],
         'doc': [],
         'inventory': [],
         'notifications': [],

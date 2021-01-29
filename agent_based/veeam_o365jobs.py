@@ -21,7 +21,9 @@
 # 01234567-89ab-cdef-0123-456789abcdef  cmk.onmicrosoft.com Outlook Online  Success 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818 191 142
 # 12345678-9abc-def0-1234-56789abcdef0  cmk.onmicrosoft.com Outlook Online2  Failed 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818
 
-factory_settings['veeam_o365jobs_default_levels'] = {
+from .agent_based_api.v1 import *
+
+VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS = {
     'states': {
         'Success': 0,
         'Warning': 1,
@@ -29,24 +31,20 @@ factory_settings['veeam_o365jobs_default_levels'] = {
         'Failed':  2,
     }
 }
-inventory_veeam_o365jobs_rules = []
 
+def discover_veeam_o365jobs(params, section):
+    appearance = params.get('item_appearance', 'name')
 
-def inventory_veeam_o365jobs(info):
-    settings = host_extra_conf_merged(host_name(), inventory_veeam_o365jobs_rules)
-    appearance = settings.get('item_appearance', 'name')
-
-    for line in info:
+    for line in section:
         name = line[2]
         if appearance == 'short':
             name = "%s %s" % (line[1].replace('.onmicrosoft.com', ''), line[2])
         elif appearance == 'full':
             name = "%s %s" % (line[1], line[2])
-        yield name, {'jobId': line[0]}
+        yield Service(item=name, parameters={'jobId': line[0]})
 
-
-def check_veeam_o365jobs(item, params, info):
-    for line in info:
+def check_veeam_o365jobs(item, params, section):
+    for line in section:
         if line[0] != params['jobId']:
             continue
 
@@ -57,33 +55,38 @@ def check_veeam_o365jobs(item, params, info):
             job_objects, job_transferred = line[7:9]
 
         if job_state in ['Running']:
-            yield 0, 'Running since %s (current state is: %s)' % (job_creation_time, job_state)
+            yield Result(state=State.OK, summary='Running since %s (current state is: %s)' % (job_creation_time, job_state))
             return
 
         state = params.get('states').get(job_state, 3)
-        yield state, "Status: %s" % job_state
+        yield Result(state=State(state), summary="Status: %s" % job_state)
 
-        yield check_levels(saveint(job_objects),
-                           'items',
-                           None,
-                           infoname='Transferred Items')
-        yield check_levels(savefloat(job_transferred),
-                           'transferred',
-                           None,
-                           human_readable_func=get_filesize_human_readable,
-                           infoname='Transferred Data')
-        yield check_levels(savefloat(job_duration),
-                           'duration',
-                           params.get('duration', None),
-                           human_readable_func=get_age_human_readable,
-                           infoname='Backup duration')
+        yield from check_levels(
+            int(job_objects),
+            label='Transferred Items',
+        )
 
+        yield from check_levels(
+            float(job_transferred),
+            label='Transferred Data',
+            render_func=render.bytes,
+        )
 
-check_info['veeam_o365jobs'] = {
-    'inventory_function': inventory_veeam_o365jobs,
-    'check_function': check_veeam_o365jobs,
-    'service_description': 'VEEAM O365 Job %s',
-    'has_perfdata': True,
-    'group': 'veeam_o365jobs',
-    'default_levels_variable': 'veeam_o365jobs_default_levels',
-}
+        yield from check_levels(
+            float(job_duration),
+            metric_name='duration',
+            levels_upper=params.get('duration', None),
+            label='Backup duration',
+            render_func=render.timespan,
+        )
+
+register.check_plugin(
+    name = "veeam_o365jobs",
+    service_name = "VEEAM O365 Job %s",
+    discovery_ruleset_name="inventory_veeam_o365jobs_rules",
+    discovery_ruleset_type=register.RuleSetType.MERGED,
+    discovery_default_parameters={},
+    discovery_function = discover_veeam_o365jobs,
+    check_function = check_veeam_o365jobs,
+    check_default_parameters=VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS,
+)

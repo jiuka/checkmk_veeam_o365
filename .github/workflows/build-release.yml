@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Build the Package
-        uses: jiuka/build-checkmk-extension@v1
+        uses: jiuka/build-checkmk-extension@v2
         id: cmkpkg
 
       - name: Create Release
