@@ -20,11 +20,21 @@
 # <<<veeam_o365licenses:sep(9) >>>
 # Valid	28.06.2020 02:00:00	2592000	42	50000
 
-from .agent_based_api.v1 import *
+from .agent_based_api.v1 import (
+    Service,
+    Result,
+    State,
+    check_levels,
+    render,
+    Metric,
+    register,
+)
+
 
 def discover_veeam_o365licenses(section):
     for index, line in enumerate(section):
         yield Service(item=str(index))
+
 
 def check_veeam_o365licenses(item, params, section):
     if int(item) > len(section):
@@ -42,7 +52,7 @@ def check_veeam_o365licenses(item, params, section):
     yield from check_levels(
         float(license_validity),
         levels_lower=params.get('validity', None),
-        label="Period of validityt",
+        label='Period of validityt',
         render_func=render.timespan,
     )
 
@@ -62,14 +72,14 @@ def check_veeam_o365licenses(item, params, section):
         license_crit = int(license_total) * (1 - license_params[1] / 100.0)
 
     yield Metric('licenses',
-            int(license_used),
-            levels=(license_warn,license_crit),
-            boundaries=(0, int(license_total)))
+                 int(license_used),
+                 levels=(license_warn, license_crit),
+                 boundaries=(0, int(license_total)))
 
     if int(license_used) <= int(license_total):
-        infotext = "used %d out of %d licenses" % (int(license_used), int(license_total))
+        infotext = 'used %d out of %d licenses' % (int(license_used), int(license_total))
     else:
-        infotext = "used %d licenses, but you have only %d" % (int(license_used), int(license_total))
+        infotext = 'used %d licenses, but you have only %d' % (int(license_used), int(license_total))
 
     if license_crit is not None and int(license_used) >= license_crit:
         status = State.CRIT
@@ -79,14 +89,16 @@ def check_veeam_o365licenses(item, params, section):
         status = State.OK
 
     if license_crit is not None:
-        infotext += " (warn/crit at %d/%d)" % (license_warn, license_crit)
-    
-    yield Result(state=State.OK, summary=infotext)
+        infotext += ' (warn/crit at %d/%d)' % (license_warn, license_crit)
+
+    yield Result(state=status, summary=infotext)
+
 
 register.check_plugin(
-    name = "veeam_o365licenses",
-    service_name = "VEEAM O365 License %s",
+    name = 'veeam_o365licenses',
+    service_name = 'VEEAM O365 License %s',
     discovery_function = discover_veeam_o365licenses,
     check_function = check_veeam_o365licenses,
+    check_ruleset_name='veeam_o365licenses',
     check_default_parameters={},
 )

@@ -21,16 +21,24 @@
 # 01234567-89ab-cdef-0123-456789abcdef  cmk.onmicrosoft.com Outlook Online  Success 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818 191 142
 # 12345678-9abc-def0-1234-56789abcdef0  cmk.onmicrosoft.com Outlook Online2  Failed 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818
 
-from .agent_based_api.v1 import *
+from .agent_based_api.v1 import (
+    Service,
+    Result,
+    State,
+    check_levels,
+    render,
+    register,
+)
 
 VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS = {
     'states': {
         'Success': 0,
         'Warning': 1,
         'Stopped': 1,
-        'Failed':  2,
+        'Failed': 2,
     }
 }
+
 
 def discover_veeam_o365jobs(params, section):
     appearance = params.get('item_appearance', 'name')
@@ -38,10 +46,11 @@ def discover_veeam_o365jobs(params, section):
     for line in section:
         name = line[2]
         if appearance == 'short':
-            name = "%s %s" % (line[1].replace('.onmicrosoft.com', ''), line[2])
+            name = '%s %s' % (line[1].replace('.onmicrosoft.com', ''), line[2])
         elif appearance == 'full':
-            name = "%s %s" % (line[1], line[2])
+            name = '%s %s' % (line[1], line[2])
         yield Service(item=name, parameters={'jobId': line[0]})
+
 
 def check_veeam_o365jobs(item, params, section):
     for line in section:
@@ -59,15 +68,17 @@ def check_veeam_o365jobs(item, params, section):
             return
 
         state = params.get('states').get(job_state, 3)
-        yield Result(state=State(state), summary="Status: %s" % job_state)
+        yield Result(state=State(state), summary='Status: %s' % job_state)
 
         yield from check_levels(
             int(job_objects),
+            metric_name='transferred',
             label='Transferred Items',
         )
 
         yield from check_levels(
             float(job_transferred),
+            metric_name='items',
             label='Transferred Data',
             render_func=render.bytes,
         )
@@ -80,13 +91,15 @@ def check_veeam_o365jobs(item, params, section):
             render_func=render.timespan,
         )
 
+
 register.check_plugin(
-    name = "veeam_o365jobs",
-    service_name = "VEEAM O365 Job %s",
-    discovery_ruleset_name="inventory_veeam_o365jobs_rules",
+    name = 'veeam_o365jobs',
+    service_name = 'VEEAM O365 Job %s',
+    discovery_ruleset_name='inventory_veeam_o365jobs_rules',
     discovery_ruleset_type=register.RuleSetType.MERGED,
     discovery_default_parameters={},
     discovery_function = discover_veeam_o365jobs,
     check_function = check_veeam_o365jobs,
+    check_ruleset_name='veeam_o365jobs',
     check_default_parameters=VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS,
 )

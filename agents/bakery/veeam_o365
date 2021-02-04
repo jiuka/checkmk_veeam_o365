@@ -16,15 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 from pathlib import Path
 from typing import Any
 
 from cmk.base.cee.plugins.bakery.bakery_api.v0 import FileGenerator, OS, Plugin, register
 
+
 def get_veeam_o365_files(conf: Any) -> FileGenerator:
-    yield Plugin(base_os=OS.WINDOWS, source=Path("veeam_o365_status.ps1"))
+    yield Plugin(base_os=OS.WINDOWS, source=Path('veeam_o365_status.ps1'))
+
 
 register.bakery_plugin(
-    name="veeam_o365",
+    name='veeam_o365',
     files_function=get_veeam_o365_files,
 )
