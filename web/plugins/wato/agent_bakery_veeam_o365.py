@@ -31,7 +31,7 @@ try:
         RulespecGroupMonitoringAgentsAgentPlugins
     )
 except Exception:
-    RulespecGroupMonitoringAgentsWindowsAgent = None
+    RulespecGroupMonitoringAgentsAgentPlugins = None
 
 
 def _valuespec_agent_config_veeam_o365():
@@ -45,7 +45,8 @@ def _valuespec_agent_config_veeam_o365():
         ],
     )
 
-if RulespecGroupMonitoringAgentsWindowsAgent is not None:
+
+if RulespecGroupMonitoringAgentsAgentPlugins is not None:
     rulespec_registry.register(
         HostRulespec(
             group=RulespecGroupMonitoringAgentsAgentPlugins,
