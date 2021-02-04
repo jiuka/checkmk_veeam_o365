@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - uses: jiuka/build-checkmk-extension@v2.0.0b1
+    - uses: jiuka/build-checkmk-extension@v2
       id: cmkpkg
 
     - name: Upload artifact
