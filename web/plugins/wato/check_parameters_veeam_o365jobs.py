@@ -24,7 +24,6 @@ from cmk.gui.valuespec import (
     DropdownChoice,
     MonitoringState,
     TextAscii,
-    TextUnicode,
     Tuple,
 )
 from cmk.gui.plugins.wato import (
@@ -42,7 +41,7 @@ def _valuespec_inventory_veeam_o365jobs_rules():
         elements=[
             ('item_appearance',
              DropdownChoice(
-                 title=_("Appearance of job"),
+                 title=_('Appearance of job'),
                  help=_(
                      'This option lets Check_MK use either only the job name, '
                      'prepend it with the shortend org oder the full org.'),
@@ -81,10 +80,10 @@ def _parameter_valuespec_veeam_o365jobs():
         elements=[
             ('duration',
              Tuple(
-                 title=_("Duration"),
+                 title=_('Duration'),
                  elements=[
-                     Age(title=_("Warning at"),),
-                     Age(title=_("Critical at"),),
+                     Age(title=_('Warning at'),),
+                     Age(title=_('Critical at'),),
                  ],
                  help=_('Thresholds for duration of the job.'),
              )),
@@ -121,7 +120,6 @@ def _parameter_valuespec_veeam_o365jobs():
                      'Failed',
                  ],
              )),
-            ('jobId', TextUnicode(title=_('Job ID'))),
         ],
         help=_('This rule configures thresholds Veeam for Office 365 jobs.'),
     )
@@ -133,5 +131,5 @@ rulespec_registry.register(
         group=RulespecGroupCheckParametersApplications,
         item_spec=_item_spec_veeam_o365jobs,
         parameter_valuespec=_parameter_valuespec_veeam_o365jobs,
-        title=lambda: _("Veeam for Office 365 Job Levels"),
+        title=lambda: _('Veeam for Office 365 Job Levels'),
     ))

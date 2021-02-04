@@ -21,10 +21,10 @@ from cmk.gui.exceptions import MKUserError
 from cmk.gui.i18n import _
 from cmk.gui.plugins.wato.check_parameters.licenses import _vs_license
 from cmk.gui.valuespec import (
-        Age,
-        Dictionary,
-        TextAscii,
-        Tuple,
+    Age,
+    Dictionary,
+    TextAscii,
+    Tuple,
 )
 from cmk.gui.plugins.wato import (
     CheckParameterRulespecWithItem,
@@ -55,15 +55,15 @@ def _valuespec_spec_veeam_o365licenses():
         elements=[
             ('validity',
              Tuple(
-                 title=_('Certificate Age'),
-                 help=_("Days until expiry of certificate"),
+                 title=_('License term'),
+                 help=_('Days until expiry of the license'),
                  elements=[
-                     Age(title=_("Warning at"),
+                     Age(title=_('Warning at'),
                          display=['days'],
-                         default_value=90*24*60*60),
-                     Age(title=_("Critical at"),
+                         default_value=90 * 24 * 60 * 60),
+                     Age(title=_('Critical at'),
                          display=['days'],
-                         default_value=60*24*60*60),
+                         default_value=60 * 24 * 60 * 60),
                  ],
                  validate=_validate_tuple_decrease,
              )),
