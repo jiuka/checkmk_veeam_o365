@@ -17,11 +17,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from cmk.gui.i18n import _
 
 from cmk.gui.plugins.metrics import (
     check_metrics,
     metric_info,
     graph_info,
+    perfometer_info,
 )
 
 
@@ -47,3 +49,9 @@ graph_info['veeam_o365licenses_licenses'] = {
     ],
     'range': (0, 'veeam_o365licenses_licenses:max'),
 }
+
+perfometer_info.append({
+    'type': 'linear',
+    'segments': ['veeam_o365licenses_licenses'],
+    'total': 'veeam_o365licenses_licenses:max',
+})

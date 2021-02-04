@@ -17,11 +17,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+from cmk.gui.i18n import _
 
 from cmk.gui.plugins.metrics import (
     check_metrics,
     metric_info,
     graph_info,
+    perfometer_info,
+    MB
 )
 
 
@@ -30,6 +33,7 @@ check_metrics['check_mk-veeam_o365jobs'] = {
     'duration': {'name': 'veeam_o365jobs_duration'},
     'items': {'name': 'veeam_o365jobs_items'},
 }
+
 
 metric_info['veeam_o365jobs_transferred'] = {
     'title': _('Data Transferred'),
@@ -48,6 +52,7 @@ metric_info['veeam_o365jobs_items'] = {
     'unit': 'count',
     'color': '#00b336',
 }
+
 
 graph_info['veeam_o365jobs_transferred'] = {
     'title': _('Veeam for Office 365 Job'),
@@ -70,3 +75,19 @@ graph_info['veeam_o365jobs_items'] = {
     'metrics': [('veeam_o365jobs_items', 'area')],
     'range': (0, 'veeam_o365jobs_items:max'),
 }
+
+
+perfometer_info.append({
+    'type': 'stacked',
+    'perfometers': [{
+        'type': 'logarithmic',
+        'metric': 'veeam_o365jobs_transferred',
+        'half_value': MB,
+        'exponent': 2,
+    }, {
+        'type': 'logarithmic',
+        'metric': 'veeam_o365jobs_duration',
+        'half_value': 60,
+        'exponent': 2
+    }],
+})
