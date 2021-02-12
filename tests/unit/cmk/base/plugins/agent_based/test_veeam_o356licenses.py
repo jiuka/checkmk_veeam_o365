@@ -53,7 +53,7 @@ def test_discovery_veeam_o365licenses(section, result):
         ]
     ),
     (
-        '0', {'validity': (40*24*60*60, 20*24*60*60)},
+        '0', {'validity': (3456000, 1728000)},
         [['Valid', '28.06.2020 02:00:00', '2592000', '42', '50000']],
         [
             Result(state=State.OK, summary='License is vaild till 28.06.2020 02:00:00'),
