@@ -40,7 +40,7 @@ VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS = {
 }
 
 
-def discover_veeam_o365jobs(params, section):
+def discovery_veeam_o365jobs(params, section):
     appearance = params.get('item_appearance', 'name')
 
     for line in section:
@@ -70,18 +70,20 @@ def check_veeam_o365jobs(item, params, section):
         state = params.get('states').get(job_state, 3)
         yield Result(state=State(state), summary='Status: %s' % job_state)
 
-        yield from check_levels(
-            int(job_objects),
-            metric_name='transferred',
-            label='Transferred Items',
-        )
+        if int(job_objects):
+            yield from check_levels(
+                int(job_objects),
+                metric_name='transferred',
+                label='Transferred Items',
+            )
 
-        yield from check_levels(
-            float(job_transferred),
-            metric_name='items',
-            label='Transferred Data',
-            render_func=render.bytes,
-        )
+        if float(job_transferred):
+            yield from check_levels(
+                float(job_transferred),
+                metric_name='items',
+                label='Transferred Data',
+                render_func=render.bytes,
+            )
 
         yield from check_levels(
             float(job_duration),
@@ -98,7 +100,7 @@ register.check_plugin(
     discovery_ruleset_name='inventory_veeam_o365jobs_rules',
     discovery_ruleset_type=register.RuleSetType.MERGED,
     discovery_default_parameters={},
-    discovery_function = discover_veeam_o365jobs,
+    discovery_function = discovery_veeam_o365jobs,
     check_function = check_veeam_o365jobs,
     check_ruleset_name='veeam_o365jobs',
     check_default_parameters=VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS,

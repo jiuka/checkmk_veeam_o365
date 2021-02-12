@@ -31,14 +31,13 @@ from .agent_based_api.v1 import (
 )
 
 
-def discover_veeam_o365licenses(section):
+def discovery_veeam_o365licenses(section):
     for index, line in enumerate(section):
         yield Service(item=str(index))
 
 
 def check_veeam_o365licenses(item, params, section):
-    if int(item) > len(section):
-        yield Result(state=State.UNKNOWN, summary='License not found.')
+    if int(item) >= len(section):
         return
 
     license_state, license_date, license_validity, \
@@ -61,10 +60,10 @@ def check_veeam_o365licenses(item, params, section):
     if license_params is False:
         license_warn = None
         license_crit = None
-    elif not params:
+    elif not license_params:
         license_warn = int(license_total)
         license_crit = int(license_total)
-    elif isinstance(params[0], int):
+    elif isinstance(license_params[0], int):
         license_warn = max(0, int(license_total) - license_params[0])
         license_crit = max(0, int(license_total) - license_params[1])
     else:
@@ -97,7 +96,7 @@ def check_veeam_o365licenses(item, params, section):
 register.check_plugin(
     name = 'veeam_o365licenses',
     service_name = 'VEEAM O365 License %s',
-    discovery_function = discover_veeam_o365licenses,
+    discovery_function = discovery_veeam_o365licenses,
     check_function = check_veeam_o365licenses,
     check_ruleset_name='veeam_o365licenses',
     check_default_parameters={},

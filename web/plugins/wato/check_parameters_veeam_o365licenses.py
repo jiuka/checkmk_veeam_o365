@@ -67,7 +67,7 @@ def _valuespec_spec_veeam_o365licenses():
                  ],
                  validate=_validate_tuple_decrease,
              )),
-            ('license', _vs_license()),
+            ('licenses', _vs_license()),
         ],
     )
 
