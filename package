@@ -25,5 +25,6 @@
     'title': u'Veeam for Office 365 Checks',
     'version': '2.1',
     'version.min_required': '2.0.0',
-    'version.packaged': '2.0.0'
+    'version.packaged': '2.0.0',
+    'version.usable_until': '2.1.0'
 }
