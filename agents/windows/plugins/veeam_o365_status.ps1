@@ -53,7 +53,7 @@ foreach ($o365License in $o365Licenses)
     {
         $state = $o365License.Status
         $supportExpirationDate = $o365License.SupportExpirationDate
-        $validity = $($supportExpirationDate - (Get-Date)).TotalSeconds
+        $validity = $($supportExpirationDate - (Get-Date)).TotalSeconds -as [int]
         $usedNumber = $o365License.UsedNumber
         $totalNumber = $o365License.TotalNumber
         Write-Host -Separator `t $state $supportExpirationDate $validity $usedNumber $totalNumber
