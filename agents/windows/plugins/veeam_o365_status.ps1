@@ -36,13 +36,12 @@ foreach ($o365Job in $o365Jobs)
 
         $o365JobEndTime = $o365JobLastSession.EndTime |  get-date -Format "dd.MM.yyyy HH\:mm\:ss"  -ErrorAction SilentlyContinue
 
-        $o365JobDuration = $($o365JobLastSession.EndTime - $o365JobLastSession.CreationTime).TotalSeconds
+        $o365JobDuration = $($o365JobLastSession.EndTime - $o365JobLastSession.CreationTime).TotalSeconds -as [int]
 
         $processed = $o365JobLastSession.Statistics.ProcessedObjects
         if ($o365JobLastSession.Statistics.TransferredData -match '\d+(\.\d+)? [A-Z]B') {
-            $transferred = Invoke-Expression -Command ($o365JobLastSession.Statistics.TransferredData -replace ' ')
+            $transferred = $(Invoke-Expression -Command ($o365JobLastSession.Statistics.TransferredData -replace ' ')) -as [int]
         }
-
 
         Write-Host -Separator `t $jobID $jobOrganisation $jobName $o365JobLastState $o365JobCreationTime $o365JobEndTime $o365JobDuration $processed $transferred
     }
