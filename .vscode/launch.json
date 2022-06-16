@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "check",
+            "type": "python",
+            "request": "launch",
+            "program": "~/bin/cmk",
+            "args": [
+            "-vv",
+            "--debug",
+            "-n",
+            "localhost"
+            ],
+            "console": "integratedTerminal",
+        }
+    ]
+}
