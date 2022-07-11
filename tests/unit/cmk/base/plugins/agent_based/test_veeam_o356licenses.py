@@ -57,7 +57,7 @@ def test_discovery_veeam_o365licenses(section, result):
         [['Valid', '28.06.2020 02:00:00', '2592000', '42', '50000']],
         [
             Result(state=State.OK, summary='License is vaild till 28.06.2020 02:00:00'),
-            Result(state=State.WARN, summary='Period of validityt: 30 days 0 hours (warn/crit below 40 days 0 hours/20 days 0 hours)'),
+            Result(state=State.WARN, summary='Period of validity: 30 days 0 hours (warn/crit below 40 days 0 hours/20 days 0 hours)'),
             Metric('licenses', 42.0, levels=(50000.0, 50000.0), boundaries=(0.0, 50000.0)),
             Result(state=State.OK, summary='used 42 out of 50000 licenses (warn/crit at 50000/50000)'),
         ]
@@ -67,7 +67,7 @@ def test_discovery_veeam_o365licenses(section, result):
         [['Valid', '28.06.2020 02:00:00', '2592000', '42', '50']],
         [
             Result(state=State.OK, summary='License is vaild till 28.06.2020 02:00:00'),
-            Result(state=State.OK, summary='Period of validityt: 30 days 0 hours'),
+            Result(state=State.OK, summary='Period of validity: 30 days 0 hours'),
             Metric('licenses', 42.0, levels=(40.0, 45.0), boundaries=(0.0, 50.0)),
             Result(state=State.WARN, summary='used 42 out of 50 licenses (warn/crit at 40/45)'),
         ]
