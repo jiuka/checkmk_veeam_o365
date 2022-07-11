@@ -32,15 +32,28 @@ foreach ($o365Job in $o365Jobs)
 
         $o365JobLastSession = Get-VBOJobSession -Job $o365Job -Last
 
-        $o365JobCreationTime = $o365JobLastSession.CreationTime |  get-date -Format "dd.MM.yyyy HH\:mm\:ss"  -ErrorAction SilentlyContinue
+        if ($o365JobLastSession -ne $null) {
 
-        $o365JobEndTime = $o365JobLastSession.EndTime |  get-date -Format "dd.MM.yyyy HH\:mm\:ss"  -ErrorAction SilentlyContinue
+            $o365JobCreationTime = $o365JobLastSession.CreationTime |  get-date -Format "dd.MM.yyyy HH\:mm\:ss" -ErrorAction SilentlyContinue
 
-        $o365JobDuration = $($o365JobLastSession.EndTime - $o365JobLastSession.CreationTime).TotalSeconds -as [int]
+            $o365JobEndTime = $o365JobLastSession.EndTime |  get-date -Format "dd.MM.yyyy HH\:mm\:ss" -ErrorAction SilentlyContinue
 
-        $processed = $o365JobLastSession.Statistics.ProcessedObjects
-        if ($o365JobLastSession.Statistics.TransferredData -match '\d+(\.\d+)? [A-Z]B') {
-            $transferred = $(Invoke-Expression -Command ($o365JobLastSession.Statistics.TransferredData -replace ' ')) -as [int]
+            $o365JobDuration = $($o365JobLastSession.EndTime - $o365JobLastSession.CreationTime).TotalSeconds -as [int]
+
+            $processed = $o365JobLastSession.Statistics.ProcessedObjects -as [int]
+
+            if ($o365JobLastSession.Statistics.TransferredData -match '\d+(\.\d+)? [A-Z]B') {
+                $transferred = $(Invoke-Expression -Command ($o365JobLastSession.Statistics.TransferredData -replace ' ')) -as [int]
+            }
+
+        } else {
+
+            $o365JobCreationTime = "01.01.1970 00:00:00"
+            $o365JobEndTime = "01.01.1970 00:00:00"
+            $o365JobDuration = 0
+            $processed = 0
+            $transferred = 0
+
         }
 
         Write-Host -Separator `t $jobID $jobOrganisation $jobName $o365JobLastState $o365JobCreationTime $o365JobEndTime $o365JobDuration $processed $transferred
