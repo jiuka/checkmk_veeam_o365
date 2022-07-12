@@ -78,9 +78,9 @@ def test_discovery_veeam_o365jobs(params, section, result):
         [
             Result(state=State.OK, summary='Status: Success'),
             Result(state=State.OK, summary='Transferred Items: 191.00'),
-            Metric('transferred', 191.0),
+            Metric('items', 191.0),
             Result(state=State.OK, summary='Transferred Data: 142 B'),
-            Metric('items', 142.0),
+            Metric('transferred', 142.0),
             Result(state=State.OK, summary='Backup duration: 2 minutes 9 seconds'),
             Metric('duration', 128.7511818),
         ]
