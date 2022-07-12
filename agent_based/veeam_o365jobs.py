@@ -73,14 +73,14 @@ def check_veeam_o365jobs(item, params, section):
         if int(job_objects):
             yield from check_levels(
                 int(job_objects),
-                metric_name='transferred',
+                metric_name='items',
                 label='Transferred Items',
             )
 
         if float(job_transferred):
             yield from check_levels(
                 float(job_transferred),
-                metric_name='items',
+                metric_name='transferred',
                 label='Transferred Data',
                 render_func=render.bytes,
             )
