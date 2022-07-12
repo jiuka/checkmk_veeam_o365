@@ -43,7 +43,7 @@ foreach ($o365Job in $o365Jobs)
             $processed = $o365JobLastSession.Statistics.ProcessedObjects -as [int]
 
             if ($o365JobLastSession.Statistics.TransferredData -match '\d+(\.\d+)? [A-Z]B') {
-                $transferred = $(Invoke-Expression -Command ($o365JobLastSession.Statistics.TransferredData -replace ' ')) -as [int]
+                $transferred = $(Invoke-Expression -Command ($o365JobLastSession.Statistics.TransferredData -replace ' ')) -as [long]
             }
 
         } else {
