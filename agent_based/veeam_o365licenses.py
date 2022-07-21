@@ -50,9 +50,9 @@ def check_veeam_o365licenses(item, params, section):
 
     yield from check_levels(
         float(license_validity),
-        levels_lower=params.get('validity', None),
-        label='Period of validity',
-        render_func=render.timespan,
+        levels_lower=params.get('validity', (0, 0)),
+        label='Period of validity' if float(license_validity) > 0 else 'Expired since',
+        render_func=lambda f: render.timespan(f if f > 0 else -f),
     )
 
     license_params = params.get('licenses', None)

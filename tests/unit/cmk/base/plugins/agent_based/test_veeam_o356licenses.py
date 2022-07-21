@@ -70,6 +70,16 @@ def test_discovery_veeam_o365licenses(section, result):
             Result(state=State.WARN, summary='used 42 out of 50 licenses (warn/crit at 40/45)'),
         ]
     ),
+    (
+        '0', {},
+        [['Valid', '28.06.2020 02:00:00', '-2592000', '42', '50']],
+        [
+            Result(state=State.OK, summary='License is vaild till 28.06.2020 02:00:00'),
+            Result(state=State.CRIT, summary='Expired since: 30 days 0 hours (warn/crit below 0 seconds/0 seconds)'),
+            Metric('licenses', 42.0, levels=(50.0, 50.0), boundaries=(0.0, 50.0)),
+            Result(state=State.OK, summary='used 42 out of 50 licenses (warn/crit at 50/50)'),
+        ]
+    ),
 ])
 def test_check_veeam_o365licenses(item, params, section, result):
     assert list(veeam_o365licenses.check_veeam_o365licenses(item, params, section)) == result
