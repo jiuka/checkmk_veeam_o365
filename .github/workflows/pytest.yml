@@ -23,7 +23,7 @@ jobs:
     - name: Setup links
       run: ./.devcontainer/symlink.sh
     - name: Install pytest
-      run: su -l -c "REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt pip3 install -r $GITHUB_WORKSPACE/.devcontainer/requirements.txt" cmk
+      run: su -l -c "REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt /omd/sites/cmk/bin/python3 /omd/sites/cmk/bin/pip3 install -r $GITHUB_WORKSPACE/.devcontainer/requirements.txt" cmk
     - name: Update GITHUB_PATH
       run: echo "/omd/sites/cmk/bin" >> $GITHUB_PATH
     - name: Run pytest
