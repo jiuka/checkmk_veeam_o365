@@ -65,11 +65,14 @@ write-host "<<<veeam_o365licenses:sep(9)>>>"
 foreach ($o365License in $o365Licenses)
     {
         $state = $o365License.Status
-        $supportExpirationDate = $o365License.SupportExpirationDate
-        $validity = $($supportExpirationDate - (Get-Date)).TotalSeconds -as [int]
+        $expirationDate = $o365License.SupportExpirationDate
+        if ($null -eq $expirationDate) {
+            $expirationDate = $o365License.ExpirationDate
+        }
+        $validity = $($expirationDate - (Get-Date)).TotalSeconds -as [int]
         $usedNumber = $o365License.UsedNumber
         $totalNumber = $o365License.TotalNumber
-        Write-Host -Separator `t $state $supportExpirationDate $validity $usedNumber $totalNumber
+        Write-Host -Separator `t $state $expirationDate $validity $usedNumber $totalNumber
     }
 }
 catch
