@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/bash
 
-TEMPDIR=$(mktemp --directory)
+TEMPDIR=$(mktemp -d)
 
 cleanup() {
   echo "Removing $TEMPDIR"
