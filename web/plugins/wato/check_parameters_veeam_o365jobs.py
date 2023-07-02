@@ -78,48 +78,46 @@ def _parameter_valuespec_veeam_o365jobs():
     return Dictionary(
         title=_('Veem for Office 365 Jobs'),
         elements=[
-            ('duration',
-             Tuple(
-                 title=_('Duration'),
-                 elements=[
-                     Age(title=_('Warning at'),),
-                     Age(title=_('Critical at'),),
-                 ],
-                 help=_('Thresholds for duration of the job.'),
-             )),
-            ('states',
-             Dictionary(
-                 title=_('State mapping'),
-                 elements=[
-                     ('Success',
-                      MonitoringState(
-                          title=_('Success'),
-                          default_value=0,
-                      )),
-                     ('Warning',
-                      MonitoringState(
-                          title=_('Warning'),
-                          default_value=1,
-                      )),
-                     ('Stopped',
-                      MonitoringState(
-                          title=_('Stopped'),
-                          default_value=1,
-                      )),
-                     ('Failed',
-                      MonitoringState(
-                          title=_('Failed'),
-                          default_value=2,
-                      )),
-                 ],
-                 help=_('Remap the job stat to different monitoring states.'),
-                 required_keys=[
-                     'Success',
-                     'Warning',
-                     'Stopped',
-                     'Failed',
-                 ],
-             )),
+            (
+                'duration',
+                Tuple(
+                    title=_('Duration'),
+                    elements=[
+                        Age(title=_('Warning at'),),
+                        Age(title=_('Critical at'),),
+                    ],
+                    help=_('Thresholds for duration of the job.'),
+                )
+            ),
+            (
+                'states',
+                Dictionary(
+                    title=_('State mapping'),
+                    elements=[
+                        ('Success', MonitoringState(title=_('Success'), default_value=0)),
+                        ('Warning', MonitoringState(title=_('Warning'), default_value=1)),
+                        ('Stopped', MonitoringState(title=_('Stopped'), default_value=1)),
+                        ('Failed', MonitoringState(title=_('Failed'), default_value=2)),
+                    ],
+                    help=_('Remap the job stat to different monitoring states.'),
+                    required_keys=[
+                        'Success',
+                        'Warning',
+                        'Stopped',
+                        'Failed',
+                    ],
+                )
+            ),
+            (
+                'maxage',
+                Tuple(
+                    title=_('Maximal time since last run'),
+                    elements=[
+                        Age(title=_('Warning if older than')),
+                        Age(title=_('Critical if older than')),
+                    ],
+                )
+            ),
         ],
         help=_('This rule configures thresholds Veeam for Office 365 jobs.'),
     )

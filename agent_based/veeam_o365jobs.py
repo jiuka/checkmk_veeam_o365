@@ -61,7 +61,7 @@ def check_veeam_o365jobs(item, params, section):
             job_creation_time, job_end_time, job_duration = line[1:7]
         job_objects = job_transferred = 0
         if len(line) >= 9:
-            job_objects, job_transferred = line[7:9]
+            job_objects, job_transferred, job_last_success = line[7:10]
 
         if job_state in ['Running']:
             yield from check_levels(
@@ -70,6 +70,16 @@ def check_veeam_o365jobs(item, params, section):
                 label='Running since',
                 render_func=render.timespan,
             )
+
+            if job_last_success.isdecimal():
+                yield from check_levels(
+                    value=int(job_last_success),
+                    metric_name='age',
+                    levels_upper=params.get('maxage', None),
+                    render_func=render.timespan,
+                    label='Last Success',
+                    notice_only=True,
+                )
             return
 
         state = params.get('states').get(job_state, 3)
@@ -97,6 +107,16 @@ def check_veeam_o365jobs(item, params, section):
             label='Backup duration',
             render_func=render.timespan,
         )
+
+        if job_last_success.isdecimal():
+            yield from check_levels(
+                value=int(job_last_success),
+                metric_name='age',
+                levels_upper=params.get('maxage', None),
+                render_func=render.timespan,
+                label='Last Success',
+                notice_only=True,
+            )
 
 
 register.check_plugin(
