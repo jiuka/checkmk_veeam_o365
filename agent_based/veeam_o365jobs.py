@@ -54,7 +54,7 @@ def discovery_veeam_o365jobs(params, section):
 
 def check_veeam_o365jobs(item, params, section):
     for line in section:
-        if line[0] != params['jobId']:
+        if line[0] != params.get('jobId', None):
             continue
 
         job_org, job_name, job_state, \
@@ -75,14 +75,14 @@ def check_veeam_o365jobs(item, params, section):
         state = params.get('states').get(job_state, 3)
         yield Result(state=State(state), summary='Status: %s' % job_state)
 
-        if int(job_objects):
+        if job_objects.isdecimal():
             yield from check_levels(
                 int(job_objects),
                 metric_name='items',
                 label='Transferred Items',
             )
 
-        if float(job_transferred):
+        if job_transferred.isdecimal():
             yield from check_levels(
                 float(job_transferred),
                 metric_name='transferred',
