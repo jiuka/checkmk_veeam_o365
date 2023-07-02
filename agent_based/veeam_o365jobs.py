@@ -21,6 +21,8 @@
 # 01234567-89ab-cdef-0123-456789abcdef  cmk.onmicrosoft.com Outlook Online  Success 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818 191 142
 # 12345678-9abc-def0-1234-56789abcdef0  cmk.onmicrosoft.com Outlook Online2  Failed 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818
 
+from dataclasses import dataclass
+from typing import Optional
 from .agent_based_api.v1 import (
     Service,
     Result,
@@ -29,6 +31,7 @@ from .agent_based_api.v1 import (
     render,
     register,
 )
+from .agent_based_api.v1.type_defs import StringTable
 
 VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS = {
     'states': {
@@ -40,83 +43,113 @@ VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS = {
 }
 
 
+@dataclass
+class VeeamO365Job:
+    org: str
+    name: str
+    state: str
+    duration: float
+    objects: Optional[int] = None
+    transferred: Optional[int] = None
+    success_age: Optional[int] = None
+
+    @property
+    def name_short(self):
+        return f"{self.org.replace('.onmicrosoft.com', '')} {self.name}"
+
+    @property
+    def name_full(self):
+        return f"{self.org} {self.name}"
+
+
+def parse_veeam_o365jobs(string_table: StringTable) -> dict[str, VeeamO365Job]:
+    parsed = {}
+
+    for item in string_table:
+        try:
+            job = VeeamO365Job(
+                org=item[1],
+                name=item[2],
+                state=item[3],
+                duration=float(item[6]),
+            )
+            if len(item) >= 9:
+                job.objects = int(item[7]) if item[7].isnumeric() else None
+                job.transferred = int(item[8]) if item[8].isnumeric() else None
+            if len(item) >= 10:
+                job.success_age = int(item[9]) if item[9].isnumeric() else None
+            parsed[item[0]] = job
+        except Exception:
+            pass
+    return parsed
+
+
+register.agent_section(
+    name='veeam_o365jobs',
+    parse_function=parse_veeam_o365jobs,
+)
+
+
 def discovery_veeam_o365jobs(params, section):
     appearance = params.get('item_appearance', 'name')
 
-    for line in section:
-        name = line[2]
+    for id, job in section.items():
+        name = job.name
         if appearance == 'short':
-            name = '%s %s' % (line[1].replace('.onmicrosoft.com', ''), line[2])
+            name = job.name_short
         elif appearance == 'full':
-            name = '%s %s' % (line[1], line[2])
-        yield Service(item=name, parameters={'jobId': line[0]})
+            name = job.name_full
+        yield Service(item=name, parameters={'jobId': id})
 
 
 def check_veeam_o365jobs(item, params, section):
-    for line in section:
-        if line[0] != params.get('jobId', None):
-            continue
+    if params.get('jobId', None) not in section:
+        return
+    job = section.get(params.get('jobId', None))
 
-        job_org, job_name, job_state, \
-            job_creation_time, job_end_time, job_duration = line[1:7]
-        job_objects = job_transferred = 0
-        if len(line) >= 9:
-            job_objects, job_transferred, job_last_success = line[7:10]
+    if job.state == 'Running':
+        yield from check_levels(
+            float(job.duration),
+            levels_upper=params.get('duration', None),
+            label='Running since',
+            render_func=render.timespan,
+        )
+    else:
+        state = params.get('states').get(job.state, 3)
+        yield Result(state=State(state), summary='Status: %s' % job.state)
 
-        if job_state in ['Running']:
+        if job.objects is not None:
             yield from check_levels(
-                float(job_duration),
-                levels_upper=params.get('duration', None),
-                label='Running since',
-                render_func=render.timespan,
-            )
-
-            if job_last_success.isdecimal():
-                yield from check_levels(
-                    value=int(job_last_success),
-                    metric_name='age',
-                    levels_upper=params.get('maxage', None),
-                    render_func=render.timespan,
-                    label='Last Success',
-                    notice_only=True,
-                )
-            return
-
-        state = params.get('states').get(job_state, 3)
-        yield Result(state=State(state), summary='Status: %s' % job_state)
-
-        if job_objects.isdecimal():
-            yield from check_levels(
-                int(job_objects),
+                int(job.objects),
                 metric_name='items',
                 label='Transferred Items',
             )
 
-        if job_transferred.isdecimal():
+        if job.transferred is not None:
             yield from check_levels(
-                float(job_transferred),
+                float(job.transferred),
                 metric_name='transferred',
                 label='Transferred Data',
                 render_func=render.bytes,
             )
 
         yield from check_levels(
-            float(job_duration),
+            float(job.duration),
             metric_name='duration',
             levels_upper=params.get('duration', None),
             label='Backup duration',
             render_func=render.timespan,
         )
 
-        if job_last_success.isdecimal():
-            yield from check_levels(
-                value=int(job_last_success),
-                metric_name='age',
-                levels_upper=params.get('maxage', None),
-                render_func=render.timespan,
-                label='Last Success',
-                notice_only=True,
-            )
+    if job.success_age is not None:
+        yield from check_levels(
+            value=int(job.success_age),
+            metric_name='age',
+            levels_upper=params.get('maxage', None),
+            render_func=render.timespan,
+            label='Last Success',
+            notice_only=True,
+        )
 
 
 register.check_plugin(
