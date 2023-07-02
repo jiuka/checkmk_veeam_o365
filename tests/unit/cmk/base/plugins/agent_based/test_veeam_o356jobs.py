@@ -130,6 +130,49 @@ def test_discovery_veeam_o365jobs(params, section, result):
             Metric('duration', 128.7511818),
         ]
     ),
+    (
+        'cmk.onmicrosoft.com Outlook Online',
+        {
+            'jobId': '12345678-9abc-def0-1234-56789abcdef0',
+        },
+        [
+            ['01234567-89ab-cdef-0123-456789abcdef', 'cmk.onmicrosoft.com', 'Outlook Online', 'Success', '29.05.2020 16:45:46', '29.05.2020 16:47:55', '128.7511818', '191', '142'],
+            ['12345678-9abc-def0-1234-56789abcdef0', 'cmk.onmicrosoft.com', 'Outlook Online2', 'Running', '29.05.2020 16:45:46', '31.12.9999 23:59:59', '314', '0', '28058']
+        ],
+        [
+            Result(state=State.OK, summary='Running since: 5 minutes 14 seconds'),
+        ]
+    ),
+    (
+        'cmk.onmicrosoft.com Outlook Online', {'jobId': '12345678-9abc-def0-1234-56789abcdef0', 'duration': (500, 600)},
+        [
+            ['01234567-89ab-cdef-0123-456789abcdef', 'cmk.onmicrosoft.com', 'Outlook Online', 'Success', '29.05.2020 16:45:46', '29.05.2020 16:47:55', '128.7511818', '191', '142'],
+            ['12345678-9abc-def0-1234-56789abcdef0', 'cmk.onmicrosoft.com', 'Outlook Online2', 'Running', '29.05.2020 16:45:46', '31.12.9999 23:59:59', '314', '0', '28058']
+        ],
+        [
+            Result(state=State.OK, summary='Running since: 5 minutes 14 seconds'),
+        ]
+    ),
+    (
+        'cmk.onmicrosoft.com Outlook Online', {'jobId': '12345678-9abc-def0-1234-56789abcdef0', 'duration': (120, 600)},
+        [
+            ['01234567-89ab-cdef-0123-456789abcdef', 'cmk.onmicrosoft.com', 'Outlook Online', 'Success', '29.05.2020 16:45:46', '29.05.2020 16:47:55', '128.7511818', '191', '142'],
+            ['12345678-9abc-def0-1234-56789abcdef0', 'cmk.onmicrosoft.com', 'Outlook Online2', 'Running', '29.05.2020 16:45:46', '31.12.9999 23:59:59', '314', '0', '28058']
+        ],
+        [
+            Result(state=State.WARN, summary='Running since: 5 minutes 14 seconds (warn/crit at 2 minutes 0 seconds/10 minutes 0 seconds)'),
+        ]
+    ),
+    (
+        'cmk.onmicrosoft.com Outlook Online', {'jobId': '12345678-9abc-def0-1234-56789abcdef0', 'duration': (120, 300)},
+        [
+            ['01234567-89ab-cdef-0123-456789abcdef', 'cmk.onmicrosoft.com', 'Outlook Online', 'Success', '29.05.2020 16:45:46', '29.05.2020 16:47:55', '128.7511818', '191', '142'],
+            ['12345678-9abc-def0-1234-56789abcdef0', 'cmk.onmicrosoft.com', 'Outlook Online2', 'Running', '29.05.2020 16:45:46', '31.12.9999 23:59:59', '314', '0', '28058']
+        ],
+        [
+            Result(state=State.CRIT, summary='Running since: 5 minutes 14 seconds (warn/crit at 2 minutes 0 seconds/5 minutes 0 seconds)'),
+        ]
+    ),
 ])
 def test_check_veeam_o365jobs(item, params, section, result):
     fullparams = veeam_o365jobs.VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS.copy()

@@ -64,7 +64,12 @@ def check_veeam_o365jobs(item, params, section):
             job_objects, job_transferred = line[7:9]
 
         if job_state in ['Running']:
-            yield Result(state=State.OK, summary='Running since %s (current state is: %s)' % (job_creation_time, job_state))
+            yield from check_levels(
+                float(job_duration),
+                levels_upper=params.get('duration', None),
+                label='Running since',
+                render_func=render.timespan,
+            )
             return
 
         state = params.get('states').get(job_state, 3)

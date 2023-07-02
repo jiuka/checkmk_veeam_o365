@@ -38,7 +38,11 @@ foreach ($o365Job in $o365Jobs)
 
             $o365JobEndTime = $o365JobLastSession.EndTime |  get-date -Format "dd.MM.yyyy HH\:mm\:ss" -ErrorAction SilentlyContinue
 
-            $o365JobDuration = $($o365JobLastSession.EndTime - $o365JobLastSession.CreationTime).TotalSeconds -as [int]
+            if ($o365JobLastState -eq 'Running') {
+                $o365JobDuration = $((Get-Date) - $o365JobLastSession.CreationTime).TotalSeconds -as [int]
+            } else {
+                $o365JobDuration = $($o365JobLastSession.EndTime - $o365JobLastSession.CreationTime).TotalSeconds -as [int]
+            }
 
             $processed = $o365JobLastSession.Statistics.ProcessedObjects -as [int]
 
