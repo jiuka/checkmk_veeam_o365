@@ -19,7 +19,7 @@
 
 from cmk.gui.i18n import _
 
-from cmk.gui.plugins.metrics import (
+from cmk.gui.plugins.metrics.utils import (
     check_metrics,
     metric_info,
     graph_info,

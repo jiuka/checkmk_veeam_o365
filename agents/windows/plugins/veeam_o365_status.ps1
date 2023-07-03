@@ -31,6 +31,7 @@ foreach ($o365Job in $o365Jobs)
         $o365JobLastState = $o365Job.LastStatus
 
         $o365JobLastSession = Get-VBOJobSession -Job $o365Job -Last
+        $o365JobSuccessSession = Get-VBOJobSession -Job $o365Job -Last -Status Success
 
         if ($o365JobLastSession -ne $null) {
 
@@ -38,7 +39,11 @@ foreach ($o365Job in $o365Jobs)
 
             $o365JobEndTime = $o365JobLastSession.EndTime |  get-date -Format "dd.MM.yyyy HH\:mm\:ss" -ErrorAction SilentlyContinue
 
-            $o365JobDuration = $($o365JobLastSession.EndTime - $o365JobLastSession.CreationTime).TotalSeconds -as [int]
+            if ($o365JobLastState -eq 'Running') {
+                $o365JobDuration = $((Get-Date) - $o365JobLastSession.CreationTime).TotalSeconds -as [int]
+            } else {
+                $o365JobDuration = $($o365JobLastSession.EndTime - $o365JobLastSession.CreationTime).TotalSeconds -as [int]
+            }
 
             $processed = $o365JobLastSession.Statistics.ProcessedObjects -as [int]
 
@@ -57,7 +62,13 @@ foreach ($o365Job in $o365Jobs)
 
         }
 
-        Write-Host -Separator `t $jobID $jobOrganisation $jobName $o365JobLastState $o365JobCreationTime $o365JobEndTime $o365JobDuration $processed $transferred
+        if ($o365JobSuccessSession -ne $null) {
+            $lastSuccessAge = $((Get-Date) - $o365JobSuccessSession.EndTime).TotalSeconds -as [int]
+        } else {
+            $lastSuccessAge = $null
+        }
+
+        Write-Host -Separator `t $jobID $jobOrganisation $jobName $o365JobLastState $o365JobCreationTime $o365JobEndTime $o365JobDuration $processed $transferred $lastSuccessAge
     }
 
 $o365Licenses = Get-VBOLicense

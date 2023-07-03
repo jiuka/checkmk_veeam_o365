@@ -8,19 +8,20 @@
             'windows/plugins/veeam_o365_status.ps1',
         ],
         'checkman': ['veeam_o365jobs', 'veeam_o365licenses'],
+        'gui': [
+            'metrics/veeam_o365jobs.py',
+            'metrics/veeam_o365licenses.py',
+            'wato/agent_bakery/veeam_o365.py',
+            'wato/check_parameters/veeam_o365licenses.py',
+            'wato/check_parameters/veeam_o365jobs.py',
+        ],
         'lib': [
             'python3/cmk/base/cee/plugins/bakery/veeam_o365.py',
         ],
-        'web': [
-            'plugins/metrics/veeam_o365jobs.py',
-            'plugins/metrics/veeam_o365licenses.py',
-            'plugins/wato/agent_bakery_veeam_o365.py',
-            'plugins/wato/check_parameters_veeam_o365licenses.py',
-            'plugins/wato/check_parameters_veeam_o365jobs.py',
-        ]},
+    },
     'name': 'veeam_o365',
     'title': u'Veeam for Office 365 Checks',
-    'version': '2.6.0',
+    'version': '2.6.1',
     'version.min_required': '2.2.0',
     'version.packaged': '2.2.0',
     'version.usable_until': '2.3.0'
