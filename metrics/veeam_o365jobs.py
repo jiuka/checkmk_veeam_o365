@@ -19,7 +19,7 @@
 
 from cmk.gui.i18n import _
 
-from cmk.gui.plugins.metrics import (
+from cmk.gui.plugins.metrics.utils import (
     check_metrics,
     metric_info,
     graph_info,
@@ -32,6 +32,7 @@ check_metrics['check_mk-veeam_o365jobs'] = {
     'transferred': {'name': 'veeam_o365jobs_transferred'},
     'duration': {'name': 'veeam_o365jobs_duration'},
     'items': {'name': 'veeam_o365jobs_items'},
+    'age': {'name': 'veeam_o365jobs_age'},
 }
 
 
@@ -50,6 +51,12 @@ metric_info['veeam_o365jobs_duration'] = {
 metric_info['veeam_o365jobs_items'] = {
     'title': _('Items Transferred'),
     'unit': 'count',
+    'color': '#00b336',
+}
+
+metric_info['veeam_o365jobs_age'] = {
+    'title': _('Time since last successfull run'),
+    'unit': 's',
     'color': '#00b336',
 }
 
@@ -74,6 +81,12 @@ graph_info['veeam_o365jobs_items'] = {
     'title': _('Veeam for Office 365 Job'),
     'metrics': [('veeam_o365jobs_items', 'area')],
     'range': (0, 'veeam_o365jobs_items:max'),
+}
+
+graph_info['veeam_o365jobs_age'] = {
+    'title': _('Veeam for Office 365 Job'),
+    'metrics': [('veeam_o365jobs_age', 'area')],
+    'range': (0, 'veeam_o365jobs_age:max'),
 }
 
 
