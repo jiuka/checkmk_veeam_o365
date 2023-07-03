@@ -145,7 +145,7 @@ def check_veeam_o365jobs(item, params, section):
         yield from check_levels(
             value=int(job.success_age),
             metric_name='age',
-            levels_upper=params.get('maxage', None),
+            levels_upper=params.get('success_maxage', None),
             render_func=render.timespan,
             label='Last Success',
             notice_only=True,

@@ -190,7 +190,7 @@ def test_discovery_veeam_o365jobs(params, section, result):
         ]
     ),
     (
-        'cmk.onmicrosoft.com Outlook Online', {'jobId': '01234567-89ab-cdef-0123-456789abcdef', 'maxage': (1800, 504000)},
+        'cmk.onmicrosoft.com Outlook Online', {'jobId': '01234567-89ab-cdef-0123-456789abcdef', 'success_maxage': (1800, 504000)},
         [
             Result(state=State.OK, summary='Status: Success'),
             Result(state=State.OK, summary='Transferred Items: 191.00'),
@@ -204,7 +204,7 @@ def test_discovery_veeam_o365jobs(params, section, result):
         ]
     ),
     (
-        'cmk.onmicrosoft.com Outlook Online', {'jobId': '01234567-89ab-cdef-0123-456789abcdef', 'maxage': (1800, 3600)},
+        'cmk.onmicrosoft.com Outlook Online', {'jobId': '01234567-89ab-cdef-0123-456789abcdef', 'success_maxage': (1800, 3600)},
         [
             Result(state=State.OK, summary='Status: Success'),
             Result(state=State.OK, summary='Transferred Items: 191.00'),
@@ -218,7 +218,7 @@ def test_discovery_veeam_o365jobs(params, section, result):
         ]
     ),
     (
-        'cmk.onmicrosoft.com Outlook Online3', {'jobId': '23456789-abcd-ef01-2345-6789abcdef01', 'maxage': (86400, 504000)},
+        'cmk.onmicrosoft.com Outlook Online3', {'jobId': '23456789-abcd-ef01-2345-6789abcdef01', 'success_maxage': (86400, 504000)},
         [
             Result(state=State.OK, summary='Running since: 5 minutes 14 seconds'),
             Result(state=State.WARN, summary='Last Success: 1 day 1 hour (warn/crit at 1 day 0 hours/5 days 20 hours)'),

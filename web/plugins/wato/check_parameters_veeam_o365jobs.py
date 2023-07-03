@@ -26,7 +26,7 @@ from cmk.gui.valuespec import (
     TextAscii,
     Tuple,
 )
-from cmk.gui.plugins.wato import (
+from cmk.gui.plugins.wato.utils import (
     CheckParameterRulespecWithItem,
     RulespecGroupCheckParametersApplications,
     RulespecGroupCheckParametersDiscovery,
@@ -109,9 +109,9 @@ def _parameter_valuespec_veeam_o365jobs():
                 )
             ),
             (
-                'maxage',
+                'success_maxage',
                 Tuple(
-                    title=_('Maximal time since last run'),
+                    title=_('Maximal time since last successfull run'),
                     elements=[
                         Age(title=_('Warning if older than')),
                         Age(title=_('Critical if older than')),
