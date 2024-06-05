@@ -13,6 +13,12 @@ jobs:
     container:
       image: checkmk/check-mk-raw:2.3.0-latest
 
+    env:
+      OMD_ROOT: /omd/sites/cmk
+      OMD_SITE: cmk
+      CMK_SITE_ID: cmk
+      WORKSPACE: ${{ github.workspace }}
+
     steps:
       - name: Initialize Checkmk Site
         run: /docker-entrypoint.sh /bin/true
