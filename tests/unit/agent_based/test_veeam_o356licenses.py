@@ -18,13 +18,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import pytest  # type: ignore[import]
-from cmk.base.plugins.agent_based.agent_based_api.v1 import (
+from cmk.agent_based.v2 import (
     Metric,
     Result,
     Service,
     State,
 )
-from cmk.base.plugins.agent_based import veeam_o365licenses
+from cmk_addons.plugins.veeam_o365.agent_based import veeam_o365licenses
 
 
 @pytest.mark.parametrize('section, result', [
@@ -46,28 +46,28 @@ def test_discovery_veeam_o365licenses(section, result):
         [
             Result(state=State.OK, summary='License is vaild till 28.06.2020 02:00:00'),
             Result(state=State.OK, summary='Period of validity: 30 days 0 hours'),
+            Result(state=State.OK, summary='used: 42'),
             Metric('licenses', 42.0, levels=(50000.0, 50000.0), boundaries=(0.0, 50000.0)),
-            Result(state=State.OK, summary='used 42 out of 50000 licenses (warn/crit at 50000/50000)'),
         ]
     ),
     (
-        '0', {'validity': (3456000, 1728000)},
+        '0', {'validity': ('fixed', (3456000, 1728000))},
         [['Valid', '28.06.2020 02:00:00', '2592000', '42', '50000']],
         [
             Result(state=State.OK, summary='License is vaild till 28.06.2020 02:00:00'),
             Result(state=State.WARN, summary='Period of validity: 30 days 0 hours (warn/crit below 40 days 0 hours/20 days 0 hours)'),
+            Result(state=State.OK, summary='used: 42'),
             Metric('licenses', 42.0, levels=(50000.0, 50000.0), boundaries=(0.0, 50000.0)),
-            Result(state=State.OK, summary='used 42 out of 50000 licenses (warn/crit at 50000/50000)'),
         ]
     ),
     (
-        '0', {'licenses': (10, 5)},
+        '0', {'licenses': ('absolute', {'warn': 10, 'crit': 5})},
         [['Valid', '28.06.2020 02:00:00', '2592000', '42', '50']],
         [
             Result(state=State.OK, summary='License is vaild till 28.06.2020 02:00:00'),
             Result(state=State.OK, summary='Period of validity: 30 days 0 hours'),
+            Result(state=State.WARN, summary='used: 42 (warn/crit at 40/45)'),
             Metric('licenses', 42.0, levels=(40.0, 45.0), boundaries=(0.0, 50.0)),
-            Result(state=State.WARN, summary='used 42 out of 50 licenses (warn/crit at 40/45)'),
         ]
     ),
     (
@@ -76,8 +76,8 @@ def test_discovery_veeam_o365licenses(section, result):
         [
             Result(state=State.OK, summary='License is vaild till 28.06.2020 02:00:00'),
             Result(state=State.CRIT, summary='Expired since: 30 days 0 hours (warn/crit below 0 seconds/0 seconds)'),
+            Result(state=State.OK, summary='used: 42'),
             Metric('licenses', 42.0, levels=(50.0, 50.0), boundaries=(0.0, 50.0)),
-            Result(state=State.OK, summary='used 42 out of 50 licenses (warn/crit at 50/50)'),
         ]
     ),
 ])

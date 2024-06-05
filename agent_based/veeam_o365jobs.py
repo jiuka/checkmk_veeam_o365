@@ -21,15 +21,14 @@
 # 01234567-89ab-cdef-0123-456789abcdef  cmk.onmicrosoft.com Outlook Online  Success 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818 191 142
 # 12345678-9abc-def0-1234-56789abcdef0  cmk.onmicrosoft.com Outlook Online2  Failed 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818
 
-from dataclasses import dataclass
-from typing import Optional
-from .agent_based_api.v1 import (
+from cmk.agent_based.v2 import (
     Service,
     Result,
     State,
     check_levels,
     render,
-    register,
+    CheckPlugin,
+    RuleSetType,
 )
 from .agent_based_api.v1.type_defs import StringTable
 
@@ -136,7 +135,7 @@ def check_veeam_o365jobs(item, params, section):
         yield from check_levels(
             float(job.duration),
             metric_name='duration',
-            levels_upper=params.get('duration', None),
+            levels_upper=params.get('duration', ('no_levels', None)),
             label='Backup duration',
             render_func=render.timespan,
         )
@@ -152,14 +151,14 @@ def check_veeam_o365jobs(item, params, section):
         )
 
 
-register.check_plugin(
-    name = 'veeam_o365jobs',
+check_plugin_veeam_o365jobs = CheckPlugin(
+    name='veeam_o365jobs',
     service_name = 'VEEAM O365 Job %s',
-    discovery_ruleset_name='inventory_veeam_o365jobs_rules',
-    discovery_ruleset_type=register.RuleSetType.MERGED,
+    discovery_function=discovery_veeam_o365jobs,
+    discovery_ruleset_name='veeam_o365jobs',
+    discovery_ruleset_type=RuleSetType.MERGED,
     discovery_default_parameters={},
-    discovery_function = discovery_veeam_o365jobs,
-    check_function = check_veeam_o365jobs,
+    check_function=discovery_veeam_o365jobs,
     check_ruleset_name='veeam_o365jobs',
     check_default_parameters=VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS,
 )

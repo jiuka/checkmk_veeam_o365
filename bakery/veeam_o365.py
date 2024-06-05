@@ -24,7 +24,8 @@ from cmk.base.cee.plugins.bakery.bakery_api.v1 import FileGenerator, OS, Plugin,
 
 
 def get_veeam_o365_files(conf: Any) -> FileGenerator:
-    yield Plugin(base_os=OS.WINDOWS, source=Path('veeam_o365_status.ps1'))
+    if conf.get('agent', 'do_not_deploy') == 'deploy':
+        yield Plugin(base_os=OS.WINDOWS, source=Path('veeam_o365_status.ps1'))
 
 
 register.bakery_plugin(

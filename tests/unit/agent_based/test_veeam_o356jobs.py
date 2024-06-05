@@ -18,13 +18,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import pytest  # type: ignore[import]
-from cmk.base.plugins.agent_based.agent_based_api.v1 import (
+from cmk.agent_based.v2 import (
     Metric,
     Result,
     Service,
     State,
 )
-from cmk.base.plugins.agent_based import veeam_o365jobs
+from cmk_addons.plugins.veeam_o365.agent_based import veeam_o365jobs
 
 EXAMPLE_STRING_TABLE = [
     ['01234567-89ab-cdef-0123-456789abcold', 'cmk.onmicrosoft.com', 'Outlook Old Online', 'Success', '29.05.2020 16:45:46', '29.05.2020 16:47:55', '128.7511818', '191', '142'],
@@ -129,7 +129,7 @@ def test_discovery_veeam_o365jobs(params, section, result):
         ]
     ),
     (
-        'cmk.onmicrosoft.com Outlook Online', {'jobId': '12345678-9abc-def0-1234-56789abcdef0', 'duration': (120, 300)},
+        'cmk.onmicrosoft.com Outlook Online', {'jobId': '12345678-9abc-def0-1234-56789abcdef0', 'duration': ('fixed', (120, 300))},
         [
             Result(state=State.CRIT, summary='Status: Failed'),
             Result(state=State.WARN, summary='Backup duration: 2 minutes 9 seconds (warn/crit at 2 minutes 0 seconds/5 minutes 0 seconds)'),
