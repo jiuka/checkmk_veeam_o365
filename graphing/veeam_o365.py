@@ -31,6 +31,7 @@ translation_veeam_o365jobs = t.Translation(
         'transferred': t.RenameTo('veeam_o365jobs_transferred'),
         'duration': t.RenameTo('veeam_o365jobs_duration'),
         'items': t.RenameTo('veeam_o365jobs_items'),
+        'age': t.RenameTo('veeam_o365jobs_age'),
     }
 )
 
@@ -56,7 +57,7 @@ metric_veeam_o365jobs_duration = m.Metric(
     color=m.Color.GREEN,
 )
 
-metric_veeam_o365jobs_transferred = m.Metric(
+metric_veeam_o365jobs_items = m.Metric(
     name='veeam_o365jobs_items',
     title=m.Title('Items Transferred'),
     unit=m.Unit(m.DecimalNotation(""), m.StrictPrecision(0)),
@@ -73,7 +74,7 @@ metric_veeam_o365licenses_licenses = m.Metric(
 graph_veeam_o365jobs_transferred = g.Graph(
     name='veeam_o365jobs_transferred',
     title=g.Title('Veeam for Office 365 Job'),
-    minimal_range=g.MinimalRange(0, m.MaximumOf('veeam_o365jobs_transferred')),
+    minimal_range=g.MinimalRange(0, m.MaximumOf('veeam_o365jobs_transferred', m.Color.BLACK)),
     compound_lines=['veeam_o365jobs_transferred'],
     simple_lines=[
         m.WarningOf('veeam_o365jobs_transferred'),
@@ -84,7 +85,7 @@ graph_veeam_o365jobs_transferred = g.Graph(
 graph_veeam_o365jobs_duration = g.Graph(
     name='veeam_o365jobs_duration',
     title=g.Title('Veeam for Office 365 Job'),
-    minimal_range=g.MinimalRange(0, m.MaximumOf('veeam_o365jobs_duration')),
+    minimal_range=g.MinimalRange(0, m.MaximumOf('veeam_o365jobs_duration', m.Color.BLACK)),
     compound_lines=['veeam_o365jobs_duration'],
     simple_lines=[
         m.WarningOf('veeam_o365jobs_duration'),
@@ -95,7 +96,7 @@ graph_veeam_o365jobs_duration = g.Graph(
 graph_veeam_o365jobs_items = g.Graph(
     name='veeam_o365jobs_items',
     title=g.Title('Veeam for Office 365 Job'),
-    minimal_range=g.MinimalRange(0, m.MaximumOf('veeam_o365jobs_items')),
+    minimal_range=g.MinimalRange(0, m.MaximumOf('veeam_o365jobs_items', m.Color.BLACK)),
     compound_lines=['veeam_o365jobs_items'],
     simple_lines=[
         m.WarningOf('veeam_o365jobs_items'),
@@ -106,7 +107,7 @@ graph_veeam_o365jobs_items = g.Graph(
 graph_veeam_o365licenses_licenses = g.Graph(
     name='veeam_o365licenses_licenses',
     title=g.Title('Veeam for Office 365 licenses'),
-    minimal_range=g.MinimalRange(0, m.MaximumOf('veeam_o365licenses_licenses')),
+    minimal_range=g.MinimalRange(0, m.MaximumOf('veeam_o365licenses_licenses', m.Color.BLACK)),
     compound_lines=['veeam_o365licenses_licenses'],
     simple_lines=[
         m.WarningOf('veeam_o365licenses_licenses'),
@@ -119,18 +120,18 @@ perfometer_veeam_o365jobs = p.Stacked(
     name='veeam_o365jobs',
     upper=p.Perfometer(
         name='veeam_o365jobs_transferred',
-        focus_range=p.FocusRange(p.Closed(0), p.Open(m.WarningOf('veeam_o365jobs_transferred'))),
+        focus_range=p.FocusRange(p.Closed(0), p.Open(100)),
         segments=['veeam_o365jobs_transferred'],
     ),
     lower=p.Perfometer(
         name='veeam_o365jobs_duration',
-        focus_range=p.FocusRange(p.Closed(0), p.Open(m.WarningOf('veeam_o365jobs_duration'))),
+        focus_range=p.FocusRange(p.Closed(0), p.Open(100)),
         segments=['veeam_o365jobs_duration'],
     ),
 )
 
 perfometer_veeam_o365licenses_licenses = p.Perfometer(
     name='veeam_o365licenses_licenses',
-    focus_range=p.FocusRange(p.Closed(0), p.Open(m.MaximumOf('veeam_o365licenses_licenses'))),
+    focus_range=p.FocusRange(p.Closed(0), p.Open(m.MaximumOf('veeam_o365licenses_licenses', m.Color.BLACK))),
     segments=['veeam_o365licenses_licenses'],
 )
