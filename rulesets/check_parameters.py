@@ -70,7 +70,7 @@ def _parameter_form_veeam_o365jobs():
             'states': DictElement(
                 parameter_form=Dictionary(
                     title=Title('State mapping'),
-                    help=Help('Remap the job stat to different monitoring states.'),
+                    help_text=Help('Remap the job stat to different monitoring states.'),
                     elements={
                         'Success': DictElement(
                             parameter_form=ServiceState(
@@ -103,7 +103,20 @@ def _parameter_form_veeam_o365jobs():
                     }
                 ),
                 required=False,
-            )
+            ),
+            'success_maxage': DictElement(
+                parameter_form=SimpleLevels(
+                    title=Title('Maximal time since last successfull run'),
+                    help_text=Help('Thresholds for last successfull run.'),
+                    level_direction=LevelDirection.UPPER,
+                    form_spec_template=TimeSpan(
+                        displayed_magnitudes=[TimeMagnitude.DAY, TimeMagnitude.HOUR, TimeMagnitude.MINUTE]
+                    ),
+                    migrate=migrate_to_float_simple_levels,
+                    prefill_fixed_levels=InputHint(value=(86400, 172800)),
+                ),
+                required=False,
+            ),
         }
     )
 

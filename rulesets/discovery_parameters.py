@@ -20,26 +20,29 @@
 from cmk.rulesets.v1 import Help, Title
 from cmk.rulesets.v1.form_specs import (
     DefaultValue,
+    DictElement,
     Dictionary,
     SingleChoice,
     SingleChoiceElement,
 )
-from cmk.rulesets.v1.rule_specs import DiscoveryParameters, Topic, HostCondition
+from cmk.rulesets.v1.rule_specs import DiscoveryParameters, Topic
 
 
 def _parameter_form_veeam_o365jobs_discovery():
     return Dictionary(
         elements={
-            'item_appearance': SingleChoice(
-                title=Title('Appearance of job'),
-                help_text=Help('This option lets Check_MK use either only the job name, '
-                               'prepend it with the shortend org oder the full org.'),
-                elements=[
-                    SingleChoiceElement(name='name', title=Title('Use only the job name')),
-                    SingleChoiceElement(name='short', title=Title('Use the shortend org and the name')),
-                    SingleChoiceElement(name='full', title=Title('Use the full org and the name')),
-                ],
-                prefill=DefaultValue('name'),
+            'item_appearance': DictElement(
+                parameter_form=SingleChoice(
+                    title=Title('Appearance of job'),
+                    help_text=Help('This option lets Check_MK use either only the job name, '
+                                   'prepend it with the shortend org oder the full org.'),
+                    elements=[
+                        SingleChoiceElement(name='name', title=Title('Use only the job name')),
+                        SingleChoiceElement(name='short', title=Title('Use the shortend org and the name')),
+                        SingleChoiceElement(name='full', title=Title('Use the full org and the name')),
+                    ],
+                    prefill=DefaultValue('name'),
+                )
             )
         },
     )
@@ -53,5 +56,4 @@ rule_spec_inventory_veeam_o365jobs_rules = DiscoveryParameters(
     help_text=Help('This rule can be used to control the inventory for Veeam for '
                    'Office 365 Jobs. You can configure the service name to include'
                    'the Organisation.'),
-    condition=HostCondition(),
 )

@@ -158,7 +158,7 @@ check_plugin_veeam_o365jobs = CheckPlugin(
     discovery_ruleset_name='veeam_o365jobs',
     discovery_ruleset_type=RuleSetType.MERGED,
     discovery_default_parameters={},
-    check_function=discovery_veeam_o365jobs,
+    check_function=check_veeam_o365jobs,
     check_ruleset_name='veeam_o365jobs',
     check_default_parameters=VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS,
 )
