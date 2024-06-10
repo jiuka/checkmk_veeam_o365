@@ -28,4 +28,8 @@ jobs:
       - name: Install pytest
         run: su -l -c "REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt pip3 install -r $GITHUB_WORKSPACE/.devcontainer/requirements.txt" cmk
       - name: Run pytest
-        run: su -l -c "python3 -m pytest" cmk
+        run: |
+          REPORT="$(mktemp)"
+          chown -R cmk:cmk $GITHUB_WORKSPACE $REPORT
+          su -l -c "cd $GITHUB_WORKSPACE; python3 -m pytest -v --emoji -cov . --md $REPORT " cmk
+          cat $REPORT > $GITHUB_STEP_SUMMARY

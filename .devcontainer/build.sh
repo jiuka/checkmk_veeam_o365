@@ -8,7 +8,7 @@ rm /omd/sites/cmk/var/check_mk/packages/${NAME} \
 
 mkp -v package package
 
-rm $NAME-$VERSION.mkp
+rm $NAME-$VERSION.mkp ||:
 cp /omd/sites/cmk/var/check_mk/packages_local/$NAME-$VERSION.mkp .
 
 mkp inspect $NAME-$VERSION.mkp
