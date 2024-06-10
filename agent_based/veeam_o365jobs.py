@@ -21,6 +21,8 @@
 # 01234567-89ab-cdef-0123-456789abcdef  cmk.onmicrosoft.com Outlook Online  Success 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818 191 142
 # 12345678-9abc-def0-1234-56789abcdef0  cmk.onmicrosoft.com Outlook Online2  Failed 29.05.2020 16:45:46 29.05.2020 16:47:55 128.7511818
 
+from dataclasses import dataclass
+from typing import Optional
 from cmk.agent_based.v2 import (
     Service,
     Result,
@@ -29,8 +31,9 @@ from cmk.agent_based.v2 import (
     render,
     CheckPlugin,
     RuleSetType,
+    StringTable,
+    AgentSection,
 )
-from .agent_based_api.v1.type_defs import StringTable
 
 VEEAM_O365JOBS_CHECK_DEFAULT_PARAMETERS = {
     'states': {
@@ -83,7 +86,7 @@ def parse_veeam_o365jobs(string_table: StringTable) -> dict[str, VeeamO365Job]:
     return parsed
 
 
-register.agent_section(
+agent_section_veeam_o365jobs = AgentSection(
     name='veeam_o365jobs',
     parse_function=parse_veeam_o365jobs,
 )
