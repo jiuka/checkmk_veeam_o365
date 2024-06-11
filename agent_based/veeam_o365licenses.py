@@ -20,14 +20,13 @@
 # <<<veeam_o365licenses:sep(9) >>>
 # Valid	28.06.2020 02:00:00	2592000	42	50000
 
-from .agent_based_api.v1 import (
+from cmk.agent_based.v2 import (
     Service,
     Result,
     State,
     check_levels,
     render,
-    Metric,
-    register,
+    CheckPlugin,
 )
 
 
@@ -50,54 +49,37 @@ def check_veeam_o365licenses(item, params, section):
 
     yield from check_levels(
         float(license_validity),
-        levels_lower=params.get('validity', (0, 0)),
+        levels_lower=params.get('validity', ('fixed', (0, 0))),
         label='Period of validity' if float(license_validity) > 0 else 'Expired since',
         render_func=lambda f: render.timespan(f if f > 0 else -f),
     )
 
-    license_params = params.get('licenses', None)
+    license_used = int(license_used)
+    license_total = int(license_total)
 
-    if license_params is False:
-        license_warn = None
-        license_crit = None
-    elif not license_params:
-        license_warn = int(license_total)
-        license_crit = int(license_total)
-    elif isinstance(license_params[0], int):
-        license_warn = max(0, int(license_total) - license_params[0])
-        license_crit = max(0, int(license_total) - license_params[1])
-    else:
-        license_warn = int(license_total) * (1 - license_params[0] / 100.0)
-        license_crit = int(license_total) * (1 - license_params[1] / 100.0)
+    match params.get('licenses', None):
+        case ('always_ok', None):
+            levels = ('no_levels', None)
+        case ('absolute', {'warn': warn, 'crit': crit}):
+            levels = ('fixed', (license_total - warn, license_total - crit))
+        case ('percentage', {'warn': warn, 'crit': crit}):
+            levels = ('fixed', (int(license_total * (100 - warn) / 100), int(license_total * (100 - crit) / 100)))
+        case _:
+            levels = ('fixed', (int(license_total), int(license_total)))
 
-    yield Metric('licenses',
-                 int(license_used),
-                 levels=(license_warn, license_crit),
-                 boundaries=(0, int(license_total)))
-
-    if int(license_used) <= int(license_total):
-        infotext = 'used %d out of %d licenses' % (int(license_used), int(license_total))
-    else:
-        infotext = 'used %d licenses, but you have only %d' % (int(license_used), int(license_total))
-
-    if license_crit is not None and int(license_used) >= license_crit:
-        status = State.CRIT
-    elif license_warn is not None and int(license_used) >= license_warn:
-        status = State.WARN
-    else:
-        status = State.OK
-
-    if license_crit is not None:
-        infotext += ' (warn/crit at %d/%d)' % (license_warn, license_crit)
-
-    yield Result(state=status, summary=infotext)
+    yield from check_levels(license_used,
+                            label="used",
+                            render_func=lambda v: f"{v:d}",
+                            levels_upper=levels,
+                            metric_name='licenses',
+                            boundaries=(0, int(license_total)))
 
 
-register.check_plugin(
-    name = 'veeam_o365licenses',
+check_plugin_veeam_o365jobs = CheckPlugin(
+    name='veeam_o365licenses',
     service_name = 'VEEAM O365 License %s',
-    discovery_function = discovery_veeam_o365licenses,
-    check_function = check_veeam_o365licenses,
+    discovery_function=discovery_veeam_o365licenses,
+    check_function=check_veeam_o365licenses,
     check_ruleset_name='veeam_o365licenses',
     check_default_parameters={},
 )
