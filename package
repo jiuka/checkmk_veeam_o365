@@ -20,7 +20,7 @@
     },
     'name': 'veeam_o365',
     'title': u'Veeam for Office 365 Checks',
-    'version': '2.7.0',
+    'version': '2.7.1',
     'version.min_required': '2.3.0p3',
     'version.packaged': '2.3.0',
     'version.usable_until': '2.4.0'
