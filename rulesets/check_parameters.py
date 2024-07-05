@@ -36,6 +36,7 @@ from cmk.rulesets.v1.form_specs import (
     validators,
     ServiceState,
     DefaultValue,
+    String,
 )
 from cmk.rulesets.v1.rule_specs import CheckParameters, Topic, HostAndItemCondition
 
@@ -116,6 +117,13 @@ def _parameter_form_veeam_o365jobs():
                     prefill_fixed_levels=InputHint(value=(86400, 172800)),
                 ),
                 required=False,
+            ),
+            'jobId': DictElement(
+                parameter_form=String(
+                    title=Title('Veeam office 365 Job'),
+                ),
+                required=False,
+                render_only=True,
             ),
         }
     )
