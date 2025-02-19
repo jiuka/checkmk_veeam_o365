@@ -7,7 +7,6 @@
 ## directory given in veeam_backup_status.bat and the .bat file needs to be
 ## started by the check_mk agent instead.
 
-
 $pshost = get-host
 $pswindow = $pshost.ui.rawui
 
@@ -76,11 +75,18 @@ write-host "<<<veeam_o365licenses:sep(9)>>>"
 foreach ($o365License in $o365Licenses)
     {
         $state = $o365License.Status
+        
         $expirationDate = $o365License.SupportExpirationDate
         if ($null -eq $expirationDate) {
-            $expirationDate = $o365License.ExpirationDate
+                $expirationDate = $o365License.ExpirationDate
         }
-        $validity = $($expirationDate - (Get-Date)).TotalSeconds -as [int]
+        
+        if ($null -ne $expirationDate) {
+                $validity = $($expirationDate - (Get-Date)).TotalSeconds -as [int]
+        } else {
+                $validity = -1  # Alternativ ein anderer Wert
+        }
+        
         $usedNumber = $o365License.UsedNumber
         $totalNumber = $o365License.TotalNumber
         Write-Host -Separator `t $state $expirationDate $validity $usedNumber $totalNumber
