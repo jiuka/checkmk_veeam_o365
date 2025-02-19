@@ -41,18 +41,17 @@ def check_veeam_o365licenses(item, params, section):
     else:
         yield Result(state=State.CRIT, summary=f'License is {license_state}')
 
-    # Sicherstellen, dass license_validity nicht leer ist
-    license_validity = section[int(item)][2].strip()  # Entferne Leerzeichen
+    license_validity = section[int(item)][2].strip()
 
-    if not license_validity or license_validity in ['-1', '']:  # Falls leerer String oder '-1'
+    if not license_validity or license_validity in ['-1', '']:
         license_validity = None
     else:
         try:
             license_validity = float(license_validity)
-            if license_validity < 0:  # Falls der Wert ungültig ist
-                license_validity = None  # Markieren als nicht vorhanden
+            if license_validity < 0: 
+                license_validity = None
         except ValueError:
-            license_validity = None  # Falls die Umwandlung fehlschlägt
+            license_validity = None
 
     if license_validity is not None and license_validity > 0:
         label = 'Period of validity'
