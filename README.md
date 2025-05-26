@@ -10,6 +10,7 @@ This Plugin and check can monitor the Veeam for Office 365 jobs and licenses.
 
 | Checkmk Version | Extension Version |
 |-----------------|-------------------|
+| Checkmk 2.4.0   | [latest](https://github.com/jiuka/checkmk_veeam_o365/releases/latest) |
 | Checkmk 2.3.0   | [latest](https://github.com/jiuka/checkmk_veeam_o365/releases/latest) |
 | Checkmk 2.2.0   | [2.6.1](https://github.com/jiuka/checkmk_veeam_o365/releases/tag/v2.6.1) |
 | Checkmk 2.1.0   | [2.5.1](https://github.com/jiuka/checkmk_veeam_o365/releases/tag/v2.5.1) |
