@@ -58,7 +58,7 @@ def check_veeam_o365licenses(item, params, section):
     license_total = int(license_total)
 
     match params.get('licenses', None):
-        case ('always_ok', None):
+        case ('always_ok', False):
             levels = ('no_levels', None)
         case ('absolute', {'warn': warn, 'crit': crit}):
             levels = ('fixed', (license_total - warn, license_total - crit))
