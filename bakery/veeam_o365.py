@@ -22,11 +22,9 @@ from typing import Any
 
 from cmk.base.cee.plugins.bakery.bakery_api.v1 import FileGenerator, OS, Plugin, register
 
-
 def get_veeam_o365_files(conf: Any) -> FileGenerator:
-    if conf.get('agent', 'do_not_deploy') == 'deploy':
+    if conf is True or (isinstance(conf, dict) and conf.get('agent', 'do_not_deploy') == 'deploy'):
         yield Plugin(base_os=OS.WINDOWS, source=Path('veeam_o365_status.ps1'))
-
 
 register.bakery_plugin(
     name='veeam_o365',
